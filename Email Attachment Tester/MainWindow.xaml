@@ -6,7 +6,20 @@
         xmlns:local="clr-namespace:Email_Attachment_Tester"
         mc:Ignorable="d"
         Title="Email Attachment Tester" Height="350" Width="525">
-    <Grid>
-        
+    <Grid PreviewTextInput="TextInput_NumbersOnly">
+        <Label Content=".msg file:" Margin="10,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox x:Name="msgFilePath" Margin="104,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" PreviewDragOver="FilePath_DragEnter" PreviewDrop="FilePath_DragDrop"/>
+        <Label Content=".xml file:" Margin="10,29,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox x:Name="xmlFilePath" Margin="104,33,10,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" PreviewDragOver="FilePath_DragEnter" PreviewDrop="FilePath_DragDrop"/>
+        <Button x:Name="startButton" Content="Start Test" Margin="0,0,10,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="StartTest_Click"/>
+        <Label Content="History Queue:" Margin="10,52,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox x:Name="historyQueuePath" Margin="104,56,10,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" PreviewDragOver="FilePath_DragEnter" PreviewDrop="FilePath_DragDrop"/>
+        <Label Content="Queue Count:" Margin="10,75,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox x:Name="queueCount" Margin="104,79,0,0" Width="50"  VerticalAlignment="Top" HorizontalAlignment="Left" PreviewTextInput="TextInput_NumbersOnly"/>
+        <Label Content="Success:" Margin="10,139,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Label Content="Fail:" Margin="10,165,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Label x:Name="successCount" Margin="104,139,10,0" VerticalAlignment="Top"/>
+        <Label x:Name="failCount" Margin="104,165,10,0" VerticalAlignment="Top"/>
+        <Button x:Name="stopButton" Content="Stop Test" Margin="0,0,67,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="StopTest_Click" IsEnabled="False"/>
     </Grid>
 </Window>

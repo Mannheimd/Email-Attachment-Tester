@@ -1,0 +1,13 @@
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\bin\Release\Email Attachment Tester.exe.config
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\bin\Release\Email Attachment Tester.exe
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\bin\Release\Email Attachment Tester.pdb
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\MainWindow.g.cs
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\App.g.cs
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\Email Attachment Tester_MarkupCompile.cache
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\Email Attachment Tester_MarkupCompile.lref
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\MainWindow.baml
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\Email Attachment Tester.g.resources
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\Email_Attachment_Tester.Properties.Resources.resources
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\Email Attachment Tester.csproj.GenerateResource.Cache
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\Email Attachment Tester.exe
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Release\Email Attachment Tester.pdb
