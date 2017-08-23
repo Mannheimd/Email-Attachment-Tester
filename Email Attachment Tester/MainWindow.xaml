@@ -21,5 +21,7 @@
         <Label x:Name="successCount" Margin="104,139,10,0" VerticalAlignment="Top"/>
         <Label x:Name="failCount" Margin="104,165,10,0" VerticalAlignment="Top"/>
         <Button x:Name="stopButton" Content="Stop Test" Margin="0,0,67,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="StopTest_Click" IsEnabled="False"/>
+        <Label Content="Attach Delay (s):" Margin="10,98,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <TextBox x:Name="attachDelay" Margin="104,102,0,0" Width="50"  VerticalAlignment="Top" HorizontalAlignment="Left" PreviewTextInput="TextInput_NumbersOnly"/>
     </Grid>
 </Window>

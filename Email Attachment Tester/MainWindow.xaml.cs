@@ -22,12 +22,17 @@ namespace Email_Attachment_Tester
         static List<Email> QueuedEmails = new List<Email>();
         static List<Email> AttachedEmails = new List<Email>();
         static List<Email> ErroredEmails = new List<Email>();
+        int PendingAttach = 0;
 
         async void RunTest(int AttachQueueLimit)
         {
-            if (!ValidateFileExtension(xmlFilePath.Text, ".xml")
-                | !ValidateFileExtension(msgFilePath.Text, ".msg")
-                | (SlashifyDirectoryPath(historyQueuePath.Text) == null))
+            string XmlFilePath = xmlFilePath.Text;
+            string MsgFilePath = msgFilePath.Text;
+            string HistoryQueuePath = historyQueuePath.Text;
+
+            if (!ValidateFileExtension(XmlFilePath, ".xml")
+                | !ValidateFileExtension(MsgFilePath, ".msg")
+                | (SlashifyDirectoryPath(HistoryQueuePath) == null))
             {
                 MessageBox.Show("File paths not valid");
                 RunTestFlag = false;
@@ -42,27 +47,52 @@ namespace Email_Attachment_Tester
                 return;
             }
 
+            int AttachDelay = 0;
+            if (attachDelay.Text != null && attachDelay.Text != "")
+            {
+                AttachDelay = Convert.ToInt32(attachDelay.Text) * 1000;
+            }
+
             Guid SessionGuid = Guid.NewGuid();
 
             int EmailNumber = 0;
+            PendingAttach = 0;
 
             while (RunTestFlag)
             {
-                while (QueuedEmails.Count() < AttachQueueLimit)
+                /*while ((QueuedEmails.Count() + PendingAttach) < AttachQueueLimit)
                 {
                     EmailNumber++;
+                    PendingAttach++;
                     Email Message = new Email();
                     Message.Number = EmailNumber;
                     Message.SessionGuid = SessionGuid;
                     Message.Name = "TestEmail" + Message.Number + "-" + SessionGuid;
 
-                    if (!QueueEmail(Message, StandardMsgXml, SlashifyDirectoryPath(historyQueuePath.Text), msgFilePath.Text))
+                    if (await QueueEmail(Message, StandardMsgXml, SlashifyDirectoryPath(historyQueuePath.Text), msgFilePath.Text, AttachDelay) == false)
                     {
                         MessageBox.Show("Failing to queue messages.");
                         RunTestFlag = false;
                         return;
                     }
-                }
+                }*/
+
+                Parallel.For(0, AttachQueueLimit - (QueuedEmails.Count() + PendingAttach), async i =>
+                {
+                    EmailNumber++;
+                    PendingAttach++;
+                    Email Message = new Email();
+                    Message.Number = EmailNumber;
+                    Message.SessionGuid = SessionGuid;
+                    Message.Name = "TestEmail" + Message.Number + "-" + SessionGuid;
+
+                    if (await QueueEmail(Message, StandardMsgXml, SlashifyDirectoryPath(HistoryQueuePath), MsgFilePath, AttachDelay) == false)
+                    {
+                        MessageBox.Show("Failing to queue messages.");
+                        RunTestFlag = false;
+                        return;
+                    }
+                });
 
                 for (int i = 0; i < QueuedEmails.Count; i++)
                 {
@@ -132,8 +162,10 @@ namespace Email_Attachment_Tester
             return false;
         }
 
-        bool QueueEmail(Email Message, XmlDocument StandardMsgXml, string HistoryQueuePath, string MsgFilePath)
+        async Task<bool> QueueEmail(Email Message, XmlDocument StandardMsgXml, string HistoryQueuePath, string MsgFilePath, int AttachDelay)
         {
+            await Task.Delay(AttachDelay);
+
             string NewMsgFilePath = HistoryQueuePath + Message.Name + ".msg";
             string NewXmlFilePath = HistoryQueuePath + Message.Name + ".xml";
 
@@ -163,6 +195,7 @@ namespace Email_Attachment_Tester
             }
 
             QueuedEmails.Add(Message);
+            PendingAttach--;
 
             return true;
         }
