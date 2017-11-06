@@ -22,27 +22,39 @@ namespace Email_Attachment_Tester
         static List<Email> QueuedEmails = new List<Email>();
         static List<Email> AttachedEmails = new List<Email>();
         static List<Email> ErroredEmails = new List<Email>();
+        static List<EmailFile> EmailFilePool = new List<EmailFile>();
         int PendingAttach = 0;
 
         async void RunTest(int AttachQueueLimit)
         {
-            string XmlFilePath = xmlFilePath.Text;
-            string MsgFilePath = msgFilePath.Text;
             string HistoryQueuePath = historyQueuePath.Text;
 
-            if (!ValidateFileExtension(XmlFilePath, ".xml")
-                | !ValidateFileExtension(MsgFilePath, ".msg")
-                | (SlashifyDirectoryPath(HistoryQueuePath) == null))
+            foreach (EmailFile file in EmailFilePool)
             {
-                MessageBox.Show("File paths not valid");
-                RunTestFlag = false;
-                return;
+                if (!ValidateFileExtension(file.XmlFilePath, ".xml")
+                | !ValidateFileExtension(file.MsgFilePath, ".msg"))
+                {
+                    MessageBox.Show("An email file path isn't valid: \n"
+                        + file.XmlFilePath + "\n"
+                        + file.MsgFilePath);
+                    RunTestFlag = false;
+                    return;
+                }
+
+                file.StandardMsgXml = GetXmlDocument(file.XmlFilePath);
+                if (file.StandardMsgXml == null)
+                {
+                    MessageBox.Show("Unable to load an XML file: \n"
+                        + file.XmlFilePath + "\n"
+                        + file.MsgFilePath);
+                    RunTestFlag = false;
+                    return;
+                }
             }
 
-            XmlDocument StandardMsgXml = GetXmlDocument(xmlFilePath.Text);
-            if (StandardMsgXml == null)
+            if (SlashifyDirectoryPath(HistoryQueuePath) == null)
             {
-                MessageBox.Show("Unable to load XML file");
+                MessageBox.Show("HistoryQueue path not valid");
                 RunTestFlag = false;
                 return;
             }
@@ -58,27 +70,14 @@ namespace Email_Attachment_Tester
             int EmailNumber = 0;
             PendingAttach = 0;
 
-            while (RunTestFlag)
+            Random EmailFileChooser = new Random();
+
+            while (RunTestFlag && EmailFilePool.Count() != 0)
             {
-                /*while ((QueuedEmails.Count() + PendingAttach) < AttachQueueLimit)
-                {
-                    EmailNumber++;
-                    PendingAttach++;
-                    Email Message = new Email();
-                    Message.Number = EmailNumber;
-                    Message.SessionGuid = SessionGuid;
-                    Message.Name = "TestEmail" + Message.Number + "-" + SessionGuid;
-
-                    if (await QueueEmail(Message, StandardMsgXml, SlashifyDirectoryPath(historyQueuePath.Text), msgFilePath.Text, AttachDelay) == false)
-                    {
-                        MessageBox.Show("Failing to queue messages.");
-                        RunTestFlag = false;
-                        return;
-                    }
-                }*/
-
                 Parallel.For(0, AttachQueueLimit - (QueuedEmails.Count() + PendingAttach), async i =>
                 {
+                    EmailFile emailFile = EmailFilePool[EmailFileChooser.Next(EmailFilePool.Count)];
+
                     EmailNumber++;
                     PendingAttach++;
                     Email Message = new Email();
@@ -86,12 +85,7 @@ namespace Email_Attachment_Tester
                     Message.SessionGuid = SessionGuid;
                     Message.Name = "TestEmail" + Message.Number + "-" + SessionGuid;
 
-                    if (await QueueEmail(Message, StandardMsgXml, SlashifyDirectoryPath(HistoryQueuePath), MsgFilePath, AttachDelay) == false)
-                    {
-                        MessageBox.Show("Failing to queue messages.");
-                        RunTestFlag = false;
-                        return;
-                    }
+                    await QueueEmail(Message, emailFile.StandardMsgXml, SlashifyDirectoryPath(HistoryQueuePath), emailFile.MsgFilePath, AttachDelay);
                 });
 
                 for (int i = 0; i < QueuedEmails.Count; i++)
@@ -180,8 +174,9 @@ namespace Email_Attachment_Tester
             {
                 NewXml.Save(NewXmlFilePath);
             }
-            catch
+            catch (Exception error)
             {
+                MessageBox.Show("Failed to attach an email properly.\n" + error.Message);
                 return false;
             }
 
@@ -189,8 +184,9 @@ namespace Email_Attachment_Tester
             {
                 CopyFile(MsgFilePath, HistoryQueuePath, "TestEmail" + Message.Number + "-" + Message.SessionGuid + ".msg");
             }
-            catch
+            catch (Exception error)
             {
+                MessageBox.Show("Failed to attach an email properly.\n" + error.Message);
                 return false;
             }
 
@@ -376,6 +372,26 @@ namespace Email_Attachment_Tester
             Regex AllowedText = new Regex("[^0-9]+");
             e.Handled = AllowedText.IsMatch(e.Text);
         }
+
+        void AddFileToPool_Click(object sender, RoutedEventArgs e)
+        {
+            EmailFile file = new EmailFile()
+            {
+                MsgFilePath = msgFilePath.Text,
+                XmlFilePath = xmlFilePath.Text
+            };
+
+            EmailFilePool.Add(file);
+
+            filesInPool.Content = EmailFilePool.Count();
+        }
+
+        void ResetFilePool_Click(object sender, RoutedEventArgs e)
+        {
+            EmailFilePool.Clear();
+
+            filesInPool.Content = EmailFilePool.Count();
+        }
     }
 
     class Email
@@ -386,5 +402,12 @@ namespace Email_Attachment_Tester
         public string EncodedLocation { get; set; }
         public string Name { get; set; }
         public Guid SessionGuid { get; set; }
+    }
+
+    class EmailFile
+    {
+        public string MsgFilePath { get; set; }
+        public string XmlFilePath { get; set; }
+        public XmlDocument StandardMsgXml { get; set; }
     }
 }

@@ -12,3 +12,4 @@ C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment
 C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Debug\Email Attachment Tester.csproj.GenerateResource.Cache
 C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Debug\Email Attachment Tester.exe
 C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Debug\Email Attachment Tester.pdb
+C:\Users\christopher.manders\Documents\Development\Github Repos\Email Attachment Tester\Email Attachment Tester\obj\Debug\Email Attachment Tester.csproj.CoreCompileInputs.cache
